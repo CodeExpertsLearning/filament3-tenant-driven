@@ -16,8 +16,12 @@ class StoreFactory extends Factory
      */
     public function definition(): array
     {
+        $store = $this->faker->words(2, true);
         return [
-            //
+            'name' => $store,
+            'phone' => $this->faker->phoneNumber(),
+            'about' => $this->faker->paragraphs(2, true),
+            'slug' => str()->of($store)->slug()
         ];
     }
 }

@@ -2,16 +2,26 @@
 
 namespace App\Models;
 
-use App\Traits\BelongsToTenantTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Store extends Model
+class Tenant extends Model
 {
-    use HasFactory, BelongsToTenantTrait;
+    use HasFactory;
 
     protected $guarded = [];
+
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class);
+    }
 
     public function products(): HasMany
     {
