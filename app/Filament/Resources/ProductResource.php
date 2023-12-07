@@ -18,13 +18,29 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $navigationGroup = 'Admin';
+
+    protected static ?string $navigationLabel = 'Produtos';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form->columns(1)
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\TextInput::make('name')
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set) {
+                        $state = str()->of($state)->slug();
+
+                        $set('slug', $state);
+                    })
+                    ->debounce(600)
+                    ->required(),
                 Forms\Components\Select::make('store_id')
                     ->relationship(
                         'store',
@@ -37,6 +53,21 @@ class ProductResource extends Resource
                             Filament::getTenant()->id
                         )
                     ),
+                Forms\Components\TextInput::make('description'),
+                Forms\Components\RichEditor::make('body')->required(),
+
+                Forms\Components\Section::make('Dados Complementares')
+                    ->columns(2)->schema([
+
+                        Forms\Components\TextInput::make('price')->required(),
+                        Forms\Components\Toggle::make('status')->required(),
+                        Forms\Components\TextInput::make('stock')->required(),
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->required(),
+
+                    ])
+
             ]);
     }
 
@@ -48,6 +79,9 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->label('Produto'),
+
+                Tables\Columns\TextColumn::make('price')->money('BRL'),
+                Tables\Columns\TextColumn::make('created_at')->date('d/m/Y H:i:s')
             ])
             ->filters([
                 //
@@ -76,5 +110,10 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return self::getModel()::count();
     }
 }
