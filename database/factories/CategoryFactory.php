@@ -20,6 +20,8 @@ class CategoryFactory extends Factory
 
         return [
             'name' => $name,
+            'store_id' => 1,
+            'tenant_id' => 1,
             'slug' => str($name)->slug(),
             'description' => fake()->sentence
         ];

@@ -12,6 +12,8 @@ class Category extends Model
 {
     use HasFactory, BelongsToTenantTrait;
 
+    protected $guarded = [];
+
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);

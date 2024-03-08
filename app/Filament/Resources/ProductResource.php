@@ -34,7 +34,7 @@ class ProductResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->reactive()
-                    ->afterStateUpdated(function ($state, $set) {
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
                         $state = str()->of($state)->slug();
 
                         $set('slug', $state);
@@ -63,8 +63,26 @@ class ProductResource extends Resource
                         Forms\Components\Toggle::make('status')->required(),
                         Forms\Components\TextInput::make('stock')->required(),
                         Forms\Components\TextInput::make('slug')
-                            ->disabled()
                             ->required(),
+                        Forms\Components\Select::make('categories')
+                            ->multiple()
+                            ->relationship(
+                                'categories',
+                                'name',
+                                fn (Builder $query, Forms\Get $get) =>
+                                $query->whereRelation(
+                                    'tenant',
+                                    'tenant_id',
+                                    '=',
+                                    Filament::getTenant()->id
+                                )
+                                    ->whereRelation(
+                                        'store',
+                                        'store_id',
+                                        '=',
+                                        $get('store_id')
+                                    )
+                            ),
 
                     ])
 
