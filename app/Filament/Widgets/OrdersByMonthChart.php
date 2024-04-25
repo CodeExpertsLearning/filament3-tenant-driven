@@ -9,6 +9,9 @@ use Flowframe\Trend\TrendValue;
 
 class OrdersByMonthChart extends ChartWidget
 {
+
+    protected static ?string $pollingInterval = null;
+
     protected static ?string $heading = 'Total de Pedidos Mês a Mês';
 
     /**

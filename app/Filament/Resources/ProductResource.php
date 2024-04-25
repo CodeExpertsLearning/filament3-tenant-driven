@@ -132,6 +132,6 @@ class ProductResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return self::getModel()::count();
+        return self::getModel()::loadWithTenant()->count();
     }
 }
