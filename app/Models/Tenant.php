@@ -13,6 +13,7 @@ class Tenant extends Model
 
     protected $guarded = [];
 
+    //Refere-se aos nossos inquilinos
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -31,5 +32,11 @@ class Tenant extends Model
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
+    }
+
+    //refere-se aos usuarios clientes dos nossos inquilinos
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
     }
 }
