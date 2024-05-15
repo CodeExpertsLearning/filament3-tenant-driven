@@ -34,14 +34,14 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('email')->email()->required(),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->rule(Password::default()),
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->same('password')
-                    ->rule(Password::default())
+                // Forms\Components\TextInput::make('password')
+                //     ->password()
+                //     ->rule(Password::default()),
+                // Forms\Components\TextInput::make('password_confirmation')
+                //     ->password()
+                //     ->same('password')
+                //     ->rule(Password::default()),
+                Forms\Components\Select::make('role')->relationship('roles', 'name')->multiple()
             ]);
     }
 
@@ -109,7 +109,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             //'create' => Pages\CreateUser::route('/create'),
-            //'edit' => Pages\EditUser::route('/{record}/edit'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 
