@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
+use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -24,7 +25,7 @@ class CardDashBoardCount extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total de Clientes', Filament::getTenant()->members->count()) // nos vamos pegar apenas os users Clientes
+            Stat::make('Total de Clientes', User::loadWithTenant()->count()) // nos vamos pegar apenas os users Clientes
                 //->chart([10, 250, 550])
                 ->icon('heroicon-m-users')
                 ->description('Clientes ao longo do ano'),

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,7 +30,81 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make([
+                    Forms\Components\Select::make('store_id')
+                        ->relationship('store', 'name', fn (Builder $query) =>
+                        $query->whereRelation(
+                            'tenant',
+                            'tenant_id',
+                            '=',
+                            Filament::getTenant()->id
+                        )),
+                    Forms\Components\Select::make('user_id')
+                        ->relationship(
+                            'user',
+                            'name',
+                            fn (Builder $query, Forms\Get $get) =>
+                            $query->whereRelation(
+                                'tenant',
+                                'tenant_id',
+                                '=',
+                                Filament::getTenant()->id
+                            )->whereRelation(
+                                'store',
+                                'store_id',
+                                '=',
+                                $get('store_id')
+                            )
+                        )->searchable(),
+
+
+                    Forms\Components\Repeater::make('items')
+                        ->columns(3)
+                        ->relationship()
+                        ->schema([
+
+                            Forms\Components\Select::make('product_id')
+                                ->relationship(
+                                    'product',
+                                    'name',
+                                    fn (Builder $query, Forms\Get $get) =>
+                                    $query->whereRelation(
+                                        'tenant',
+                                        'tenant_id',
+                                        '=',
+                                        Filament::getTenant()->id
+                                    )->whereRelation(
+                                        'store',
+                                        'store_id',
+                                        '=',
+                                        $get('../../store_id')
+                                    )
+                                )->searchable(),
+
+                            Forms\Components\TextInput::make('amount')
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                                    $price = \App\Models\Product::find($get('product_id'))?->price;
+
+                                    $state = $price ? $state * $price : null;
+
+                                    $set('order_value', $state);
+                                })
+                                ->debounce(600)
+                                ->numeric()->required(),
+
+
+                            Forms\Components\TextInput::make('order_value')->readOnly()
+                        ])
+                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Forms\Get $get) {
+                            $data['tenant_id'] = Filament::getTenant()->id;
+                            $data['store_id'] = $get('store_id');
+
+                            return $data;
+                        }),
+
+                ]),
+
             ]);
     }
 

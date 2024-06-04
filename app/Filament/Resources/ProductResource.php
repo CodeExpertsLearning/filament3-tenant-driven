@@ -18,6 +18,10 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
+    protected static ?string $modelLabel = 'Produto';
+
+    protected static ?string $pluralModelLabel = 'Produtos';
+
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square-stack';
 
     protected static ?string $recordTitleAttribute = 'name';
@@ -59,7 +63,7 @@ class ProductResource extends Resource
                 Forms\Components\Section::make('Dados Complementares')
                     ->columns(2)->schema([
 
-                        Forms\Components\TextInput::make('price')->required(),
+                        Forms\Components\TextInput::make('price')->label('Preço')->required(),
                         Forms\Components\Toggle::make('status')->required(),
                         Forms\Components\TextInput::make('stock')->required(),
                         Forms\Components\TextInput::make('slug')
@@ -98,7 +102,7 @@ class ProductResource extends Resource
                     ->searchable()
                     ->label('Produto'),
 
-                Tables\Columns\TextColumn::make('price')->money('BRL'),
+                Tables\Columns\TextColumn::make('price')->money('BRL')->label('Preço'),
                 Tables\Columns\TextColumn::make('created_at')->date('d/m/Y H:i:s')
             ])
             ->filters([

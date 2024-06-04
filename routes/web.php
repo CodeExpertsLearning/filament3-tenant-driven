@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/subscription/checkout', \App\Livewire\Subscription\Checkout::class)
+    ->name('subscription.checkout');

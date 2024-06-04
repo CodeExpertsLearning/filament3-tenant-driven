@@ -11,16 +11,18 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, HasTenants
 {
-    use HasApiTokens, HasFactory, Notifiable, BelongsToTenantTrait, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, BelongsToTenantTrait, HasRoles, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -58,6 +60,11 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->belongsToMany(Tenant::class);
     }
 
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -68,6 +75,8 @@ class User extends Authenticatable implements FilamentUser, HasTenants
      */
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->isDefault()) return !$this->hasRole('customer');
+
         return true;
     }
 

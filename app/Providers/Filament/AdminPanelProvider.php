@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Billing\SubscriptionBillingProvider;
 use App\Models\Tenant;
 use App\Filament\Pages\Tenancy\RegisterTenant;
 use Filament\Http\Middleware\Authenticate;
@@ -31,9 +32,12 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->tenant(Tenant::class, slugAttribute: 'slug')
             ->tenantRegistration(RegisterTenant::class)
+            //->tenantDomain('{tenant:slug}.storestenant.com')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#4B8130',
             ])
+            ->brandName('MK Place')
+            ->brandLogo(asset('images/logo-custom.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -58,6 +62,8 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
+            ->requiresTenantSubscription()
+            ->tenantBillingProvider(new SubscriptionBillingProvider())
             ->spa();
     }
 }

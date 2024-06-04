@@ -24,7 +24,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'Admin';
 
-    protected static ?string $navigationLabel = 'Usuários';
+    protected static ?string $navigationLabel = 'Clientes';
 
     protected static ?int $navigationSort = 1;
 
@@ -61,7 +61,7 @@ class UserResource extends Resource
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\Action::make('change_password')
 
-                    // ->icon('heroicon-m-user')
+                    ->icon('heroicon-m-shield-check')
                     // ->color('info')
                     // ->requiresConfirmation()
 
@@ -115,6 +115,6 @@ class UserResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Filament::getTenant()->members->count();
+        return self::getModel()::loadWithTenant()->count();
     }
 }

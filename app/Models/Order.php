@@ -15,9 +15,11 @@ class Order extends Model
 
     protected $withCount = ['items'];
 
+    protected $fillable = ['store_id', 'code', 'user_id'];
+
     public function orderTotal(): Attribute
     {
-        return new Attribute(fn ($attr) => $this->items->sum('order_value') / 100);
+        return new Attribute(fn ($attr) => $this->items->sum('order_value'));
     }
 
     public function items(): HasMany
@@ -28,5 +30,10 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
     }
 }
