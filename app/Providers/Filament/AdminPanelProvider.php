@@ -25,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $subdomainUrlConfig = '{tenant:slug}.' . env('TENANT_URL_DOMAIN');
         return $panel
             ->default()
             ->id('admin')
@@ -32,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->tenant(Tenant::class, slugAttribute: 'slug')
             ->tenantRegistration(RegisterTenant::class)
-            //->tenantDomain('{tenant:slug}.storestenant.com')
+            ->tenantDomain($subdomainUrlConfig)
             ->colors([
                 'primary' => '#4B8130',
             ])
