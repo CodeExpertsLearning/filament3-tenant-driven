@@ -15,7 +15,7 @@ class CheckUserSubscription
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && !$request->user()->subscribed('default')) {
+        if ($request->user() && !$request->user()->subscribed('default') && !$request->user()->tenants->count()) {
             return redirect()->route('subscription.checkout');
         }
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Store;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Pages\Dashboard as DashboardFilament;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
@@ -15,7 +16,7 @@ class Dashboard extends DashboardFilament
     {
         return $form->schema([
             Forms\Components\Select::make('store_id')->options(
-                fn () => Store::pluck('name', 'id')
+                fn() => Store::whereRelation('tenant', 'tenant_id', Filament::getTenant()->id)->pluck('name', 'id')
             ),
             Forms\Components\DatePicker::make('startDate'),
             Forms\Components\DatePicker::make('endDate')
